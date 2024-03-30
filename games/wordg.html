@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Guess The Word | MindPal</title>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <h1>Guess Word Game</h1>
+        <div class="content">
+            <input type="text" class="type-input" maxlength="1">
+            <div class="word"></div>
+            <div class="info">
+                <p class="guess">Guesses: <span></span></p>
+                <p class="wrong">Mistakes: <span></span></p>
+                <p class="hint">Hint: <span></span></p>
+            </div>
+            <div class="buttons">
+                <button class="reset">Reset Game</button>
+                <button class="showhint">Show Hint</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    background-color: #1565c0;
+}
+
+.wrapper{
+    width: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.wrapper h1{
+    font-size: 22px;
+    text-align: center;
+    font-weight: 500;
+    border-bottom: 2px solid #ccc;
+    margin: 0 20px;
+    padding: 20px 25px;
+}
+
+.wrapper .content{
+    margin: 25px 25px 30px;
+}
+
+.content .word{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.word input{
+    height: 51px;
+    width: 50px;
+    margin: 4px;
+    color: #0d47a1;
+    border: 1px solid #b5b5b5;
+    background: none;
+    text-align: center;
+    border-radius: 10px;
+    text-transform: uppercase;
+    pointer-events: none;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.type-input{
+    z-index: -999;
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.word input:first-child{
+    margin-left: 0;
+}
+
+.content .info{
+    margin: 20px 0;
+}
+
+.info p{
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-between;
+}
+
+.content .buttons .reset, .content .buttons .showhint{
+    width: 48%;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    outline: none;
+    padding: 10px 0;
+    font-size: 17px;
+    background-color: #1565c0;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.content .buttons .reset:hover, .content .buttons .showhint:hover{
+    background-color: #1e88e5;
+}
+
+@media screen and (max-width: 450px) {
+    
+    .wrapper{
+        width: 100%;
+    }
+
+    .wrapper h1{
+        font-size: 20px;
+        padding: 16px 20px;
+    }
+
+    .wrapper .content{
+        margin: 25px 20px 30px;
+    }
+
+    .word input{
+        height: 46px;
+        width: 45px;
+        margin: 3px;
+        font-size: 19px;
+    }
+
+    .content .info p{
+        font-size: 15px;
+    }
+
+    .content .buttons .reset{
+        padding: 9px 0;
+        font-size: 15px;
+    }
+
+}
+    </style>
+    <script src="words-db.js"></script>
+    <script >const inputs = document.querySelector(".word"),
+        hintTag = document.querySelector(".hint span"),
+        guessLeft = document.querySelector(".guess span"),
+        mistakes = document.querySelector(".wrong span"),
+        resetBtn = document.querySelector(".reset"),
+        hintBtn = document.querySelector(".showhint"),
+        hintElement = document.querySelector(".hint"),
+        typeInput = document.querySelector(".type-input");
+    
+    // Intializing game variables
+    let word, incorrectLetters = [], correctLetters = [], maxGuesses;
+    
+    // Select random word from word list and set up game
+    function startNewGame() {
+        alert("New Game Started! Guess New Word :)");
+        // Hide hint element
+        hintElement.style.display = "none";
+        hintElement.style.opacity = "0";
+    
+        // Choose random word from db and setup game
+        const ranWord = wordList[Math.floor(Math.random() * wordList.length)];
+        word = ranWord.word;
+        // If word chars >= 5 then max guess = 8 else max guess = 6
+        maxGuesses = word.length >= 5 ? 8 : 6;
+        incorrectLetters = [];
+        correctLetters = [];
+        hintTag.innerText = ranWord.hint;
+        guessLeft.innerText = maxGuesses;
+        mistakes.innerText = incorrectLetters;
+    
+        // Create input for each letter of word
+        inputs.innerHTML = "";
+        for (let i = 0; i < word.length; i++) {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.disabled = true;
+            inputs.appendChild(input);
+        }
+    }
+    
+    // Handle user input and update game stats
+    function handleInput(e) {
+        // Ignore non-letters input and letters that have already guessed
+        const key = e.target.value.toLowerCase();
+        if (key.match(/^[a-z]+$/i) && !incorrectLetters.includes(`${key}`) && !correctLetters.includes(`${key}`)) {
+            // Check if the letter is in word
+            if (word.includes(key)) {
+                // Update correct guess
+                for (let i = 0; i < word.length; i++) {
+                    if (word[i] === key) {
+                        inputs.querySelectorAll("input")[i].value += key;
+                    }
+                }
+                correctLetters += key;
+            } else {
+                // Update incorrect guess
+                maxGuesses--;
+                incorrectLetters.push(`${key}`);
+                mistakes.innerText = incorrectLetters;
+            }
+        }
+    
+        // Update remain guess and check for win lose conditions
+        guessLeft.innerText = maxGuesses;
+        if (correctLetters.length === word.length) {
+            alert(`Congrats! You Found The Word ${word.toUpperCase()}`);
+            startNewGame();
+        } else if (maxGuesses < 1) {
+            alert("Game Over! You Don't Have Remaining Guesses!");
+            for (let i = 0; i < word.length; i++) {
+                // Fill inputs with correct words
+                inputs.querySelectorAll("input")[i].value = word[i];
+            }
+        }
+    
+        // Clear input field
+        typeInput.value = "";
+    }
+    
+    // Show hint element
+    function showHintElement() {
+        hintElement.style.display = "block";
+        hintElement.style.opacity = "1";
+    }
+    
+    // Setup event listeners
+    resetBtn.addEventListener("click", startNewGame);
+    hintBtn.addEventListener("click", showHintElement);
+    typeInput.addEventListener("input", handleInput);
+    inputs.addEventListener("click", () => typeInput.focus());
+    document.addEventListener("keydown", () => typeInput.focus());
+    
+    startNewGame();</script>
+</body>
+
+</html>
