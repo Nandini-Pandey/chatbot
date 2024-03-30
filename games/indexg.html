@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Selection</title>
+<style>
+    body {
+    background: url("1.jpg");
+    background-size: cover;
+    color: #051830;
+    font-family: Arial, Helvetica, sans-serif;
+    display: grid;
+    justify-items: center;
+}
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+    }
+    .button {
+        width: 150px;
+        height: 150px;
+        margin: 10px;
+        background-color: #275675e3; /* Neon blue */
+        border:#183447;
+        color: white;
+        font-size: 26px;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(124, 147, 252, 0.842); /* Neon glow effect */
+        margin: 4%;
+    }
+    .button:hover {
+        background-color: #da8e47;
+        box-shadow: 0 0 20px rgba(190, 201, 33, 0.705);
+        color: rgb(24, 16, 6); /* Darker blue on hover */
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <button class="button" onclick="window.location.href='pingpong.html'">Ping Pong</button>
+    <button class="button" onclick="window.location.href='snake.html'">Snake</button>
+    <button class="button" onclick="window.location.href='indext.html'">Tic Tac Toe</button>
+    <button class="button" onclick="window.location.href='pixel.html'">Pixel Art</button>
+    <button class="button" onclick="window.location.href='minesweeper.html'">Mine- Sweeper</button>
+    <button class="button" onclick="window.location.href='bball.html'">Bouncing Ball</button>
+    <button class="button" onclick="window.location.href='2048.html'">2048</button>
+    <button class="button" onclick="window.location.href='wordg.html'">Guess The Word</button>
+    
+</div>
+</body>
+</html>
